@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,5 +9,11 @@ Route::prefix('dashboard')->as('dashboard.')->middleware(['auth', 'verified'])->
         return view('dashboard.index');
     })->name('index');
     // Route::get('/', [DashboardController::class , 'index'])->name('index');
-    ROute::get('page/{name}', [DashboardController::class , 'page'])->name('page');
+    Route::get('page/{name}', [DashboardController::class , 'page'])->name('page');
+
+    // =====================================
+    // ============ Categories =============
+    // =====================================
+    Route::resource('categories', CategoryController::class)->except(['show' ,'edit' , 'create']);
+
 });
