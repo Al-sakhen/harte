@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,7 +13,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return dd(request()->routeIs('dashboard.categories.*') ? 'yes' : 'no');
+        $parents = Category::whereNull('parent_id')->get();
+        $categories = Category::whereNull('parent_id')->with('childrens')->withCount('childrens')->get();
+        return view('dashboard.categories.index', compact('parents', 'categories'));
     }
 
     /**
@@ -28,7 +31,13 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:categories,name'],
+            'parent_id' => 'nullable|exists:categories,id',
+        ]);
+
+        Category::create($request->all());
+        return redirect()->route('dashboard.categories.index')->with('success', 'Category created successfully');
     }
 
     /**
@@ -50,16 +59,36 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255',  "unique:categories,name,$category->id"],
+            'parent_id' => 'nullable|exists:categories,id',
+        ]);
+
+        $category->update($request->all());
+
+        return redirect()->route('dashboard.categories.index')->with('success', 'Category updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
-        //
+        if ($category->childrens->count() > 0) {
+            return redirect()->route('dashboard.categories.index')->with('error', 'Category has childrens');
+        }
+        $category->delete();
+        return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
+    }
+
+
+    public function toggleActive(Category $category)
+    {
+        $category->update([
+            'active' => !$category->active
+        ]);
+        return redirect()->route('dashboard.categories.index')->with('success', 'Category updated successfully');
     }
 }

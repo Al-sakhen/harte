@@ -8,6 +8,11 @@
 <link rel="stylesheet" href="{{ asset('dashboard/plugins/fontawesome-free/css/all.min.css') }}">
 <!-- overlayScrollbars -->
 <link rel="stylesheet" href="{{ asset('dashboard/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+<!-- Toastr -->
+<link rel="stylesheet" href="{{ asset('dashboard/plugins/toastr/toastr.min.css') }}">
+{{-- Jquey confirm --}}
+<link rel="stylesheet" href="{{ asset('dashboard/plugins/jquery-confirm/jquery-confirm.css') }}">
+
 <!-- Theme style -->
 <link rel="stylesheet" href="{{ asset('dashboard/dist/css/adminlte.min.css') }}">
 

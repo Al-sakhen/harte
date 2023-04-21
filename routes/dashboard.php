@@ -15,5 +15,6 @@ Route::prefix('dashboard')->as('dashboard.')->middleware(['auth', 'verified'])->
     // ============ Categories =============
     // =====================================
     Route::resource('categories', CategoryController::class)->except(['show' ,'edit' , 'create']);
+    Route::get('categories/{category}/active' , [CategoryController::class , 'toggleActive'])->name('categories.toggle');
 
 });
